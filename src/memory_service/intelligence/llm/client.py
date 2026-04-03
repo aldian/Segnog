@@ -4,7 +4,7 @@ Simple async LLM client for the memory service.
 Uses OpenAI-compatible API (OpenRouter by default).
 No provider registry — the memory service only needs a single LLM endpoint.
 
-Captures LLM reasoning traces (e.g. MiniMax <think> blocks) into a
+Captures LLM reasoning traces (e.g. <think> blocks, reasoning_content) into a
 per-group buffer for downstream metacognition.
 """
 
@@ -94,15 +94,15 @@ async def llm_call(
         group_id: If set, reasoning traces are buffered for metacognition.
         caller: Label for the calling function (for trace attribution).
         reasoning_effort: If set (e.g. "high"), enables reasoning_split and
-            sets reasoning_effort via extra_body for MiniMax.
+            sets reasoning_effort via extra_body (provider-specific).
 
     Returns:
         LLM response text (reasoning stripped).
     """
     client = get_llm_client()
     model = model or get_flash_model()
-    # Strip provider prefixes (e.g. "minimax/MiniMax-M2.7" → "MiniMax-M2.7")
-    # MiniMax API expects bare model name, not prefixed
+    # Strip provider prefixes (e.g. "provider/model-name" → "model-name")
+    # Most APIs expect bare model name, not prefixed
     if "/" in model:
         model = model.split("/", 1)[-1]
 
