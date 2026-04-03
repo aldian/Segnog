@@ -18,8 +18,8 @@ graph_name = "episode_store"
 
 # Embeddings
 [default.embeddings]
-model = "embedding-3"
-base_url = "https://open.bigmodel.cn/api/paas/v4/"
+model = "text-embedding-3-small"
+base_url = "https://api.openai.com/v1"
 
 # LLM (for smart operations)
 [default.llm]
