@@ -25,9 +25,9 @@ class DirectJSONAdapter(JSONAdapter):
     """
 
     def __call__(self, lm, lm_kwargs, signature, demos, inputs):
-        # MiniMax models don't need json_object — they produce JSON from the prompt
         model_name = getattr(lm, "model", "") or ""
-        if "minimax" not in model_name.lower():
+        # MiniMax and GLM models often reject json_object on certain endpoints
+        if "minimax" not in model_name.lower() and "glm" not in model_name.lower():
             lm_kwargs["response_format"] = {"type": "json_object"}
         return Adapter.__call__(self, lm, lm_kwargs, signature, demos, inputs)
 
