@@ -133,6 +133,24 @@ results (title, content, link, publish date). This is a Z.AI-specific
 extension not currently used by Segnog but could be useful for future
 enrichment pipelines.
 
+## Critical Notes & Known Quirks
+
+### 1. Embeddings Model Constraint
+While the Chinese domestic Zhipu API (`open.bigmodel.cn`) offers `embedding-3` and `embedding-2`, **the global Z.AI API does not currently expose an embedding endpoint.**
+
+Because Segnog requires embeddings to power vector search on the graph, **you cannot use your Z.AI API key for embeddings**. You MUST configure a separate provider (like OpenAI or OpenRouter) for embeddings in your configuration:
+
+```env
+EMBEDDING_API_KEY=sk-your-openai-api-key-here
+EMBEDDING_BASE_URL=https://api.openai.com/v1
+EMBEDDING_MODEL=text-embedding-3-small
+```
+
+### 2. Knowledge Extraction (DSPy) Patch
+Segnog uses DSPy internally in a background worker to extract structured knowledge. By default, DSPy forces `response_format: {"type": "json_object"}`. Z.AI strictly rejects this format flag and throws an `Invalid API parameter` error. 
+
+To resolve this, Segnog's `DirectJSONAdapter` (`src/memory_service/intelligence/llm/dspy_adapter.py`) has been explicitly patched to bypass `json_object` whenever the model family `glm` is detected. GLM handles the JSON production purely from the system prompt.
+
 ## Switching to a Different Provider
 
 The env vars are provider-neutral. To switch away from Z.AI:
