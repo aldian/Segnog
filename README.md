@@ -187,6 +187,25 @@ Or in Claude Code (`settings.json`):
 }
 ```
 
+**For Antigravity (or clients with incomplete SSE implementations):**
+If your MCP client experiences "Method Not Allowed" errors during initialization, you can bypass the SSE network layer entirely and use Segnog's built-in `memory-service-mcp` CLI command directly over standard I/O (stdio) via Docker:
+
+```json
+{
+  "mcpServers": {
+    "segnog-memory": {
+      "command": "docker",
+      "args": [
+        "exec",
+        "-i",
+        "segnog-segnog-1",
+        "memory-service-mcp"
+      ]
+    }
+  }
+}
+```
+
 Six tools are available once connected:
 
 | Tool | Description |
