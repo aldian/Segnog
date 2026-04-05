@@ -25,6 +25,8 @@ base_url = "https://api.openai.com/v1"
 [default.llm]
 flash_model = "glm-5"
 base_url = "https://open.bigmodel.cn/api/paas/v4/"
+# Max output tokens per LLM call. Some APIs (e.g. Z.AI / GLM) reject large values.
+max_tokens = 4096
 
 # Session (short-term memory in DragonflyDB)
 [default.session]

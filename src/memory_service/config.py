@@ -98,6 +98,22 @@ def get_llm_api_key() -> str:
     )
 
 
+def get_llm_max_tokens() -> int:
+    """Max output tokens for LLM calls.
+
+    Some APIs (e.g. Z.AI / GLM) reject very large values like 196000.
+    Default 4096 is universally safe across all providers.
+    Override via MEMORY_SERVICE_LLM__MAX_TOKENS env var or llm.max_tokens in settings.toml.
+    """
+    s = get_settings()
+    return int(
+        os.environ.get(
+            "MEMORY_SERVICE_LLM__MAX_TOKENS",
+            s.get("llm.max_tokens", 4096),
+        )
+    )
+
+
 # Session (short-term memory)
 def get_session_ttl() -> int:
     s = get_settings()

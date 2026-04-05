@@ -15,7 +15,7 @@ from typing import Any, List, Dict, Optional
 
 from openai import AsyncOpenAI
 
-from ...config import get_llm_api_key, get_llm_base_url, get_flash_model
+from ...config import get_llm_api_key, get_llm_base_url, get_flash_model, get_llm_max_tokens
 
 logger = logging.getLogger(__name__)
 
@@ -76,7 +76,7 @@ async def llm_call(
     prompt: str,
     model: Optional[str] = None,
     temperature: float = 0.2,
-    max_tokens: int = 196000,
+    max_tokens: int = None,
     system_prompt: Optional[str] = None,
     group_id: Optional[str] = None,
     caller: Optional[str] = None,
@@ -111,11 +111,12 @@ async def llm_call(
         messages.append({"role": "system", "content": system_prompt})
     messages.append({"role": "user", "content": prompt})
 
+    _max_tokens = max_tokens if max_tokens is not None else get_llm_max_tokens()
     kwargs: Dict[str, Any] = dict(
         model=model,
         messages=messages,
         temperature=temperature,
-        max_tokens=max_tokens,
+        max_tokens=_max_tokens,
     )
     if reasoning_effort:
         kwargs["extra_body"] = {
