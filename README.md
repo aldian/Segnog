@@ -187,19 +187,33 @@ Or in Claude Code (`settings.json`):
 }
 ```
 
-**For Antigravity (or clients with incomplete SSE implementations):**
-If your MCP client experiences "Method Not Allowed" errors during initialization, you can bypass the SSE network layer entirely and use Segnog's built-in `memory-service-mcp` CLI command directly over standard I/O (stdio) via Docker:
+**For Antigravity (or clients with strict Host validations):**
+If your MCP client experiences "Method Not Allowed" or "Invalid Host header" errors during initialization (especially when deployed behind an NGINX reverse proxy on Azure), you can bypass the SSE HTTP layer entirely. Segnog's built-in `memory-service-mcp` CLI command works perfectly over standard I/O (`stdio`).
 
+For a **local** Docker deployment:
 ```json
 {
   "mcpServers": {
     "segnog-memory": {
       "command": "docker",
+      "args": ["exec", "-i", "segnog-segnog-1", "memory-service-mcp"]
+    }
+  }
+}
+```
+
+For a **remote** deployment (e.g. Segnog running on an Azure VM):
+You can safely tunnel the `stdio` connection completely over SSH directly into the Docker container from your local Window/Linux machine. 
+```json
+{
+  "mcpServers": {
+    "segnog-memory": {
+      "command": "ssh",
       "args": [
-        "exec",
-        "-i",
-        "segnog-segnog-1",
-        "memory-service-mcp"
+        "-i", "C:\\Users\\YourUser\\.ssh\\id_rsa",
+        "-o", "StrictHostKeyChecking=no",
+        "azureuser@YOUR_VM_IP",
+        "docker", "exec", "-i", "app-segnog-1", "memory-service-mcp"
       ]
     }
   }

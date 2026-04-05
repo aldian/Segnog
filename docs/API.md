@@ -941,6 +941,26 @@ curl http://localhost:9000/api/v1/memory/mcp/tools | python3 -m json.tool
 }
 ```
 
+**Antigravity / Remote IDEs (via SSH Tunneling over stdio)**:
+
+If Segnog runs on a remote server (e.g. an Azure VM) behind strict proxies, you can bypass SSE entirely by tunneling the JSON-RPC `stdio` stream directly into the Docker container via SSH:
+
+```json
+{
+  "mcpServers": {
+    "segnog-memory": {
+      "command": "ssh",
+      "args": [
+        "-i", "C:\\Users\\YourUser\\.ssh\\id_rsa",
+        "-o", "StrictHostKeyChecking=no",
+        "azureuser@YOUR_VM_IP",
+        "docker", "exec", "-i", "app-segnog-1", "memory-service-mcp"
+      ]
+    }
+  }
+}
+```
+
 **Claude Code** (`settings.json`):
 
 ```json
